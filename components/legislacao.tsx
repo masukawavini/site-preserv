@@ -120,6 +120,16 @@ export function Legislacao() {
             ))}
           </div>
         </div>
+        <div className="text-center mt-8">
+          <Button variant="outline" asChild>
+            <Link
+              href="https://sarandi.eloweb.net/portaltransparencia/2/leiseatos-geral/geral"
+              target="_blank"
+            >
+              Ver todos os documentos
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
