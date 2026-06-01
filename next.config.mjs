@@ -7,7 +7,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: "/site-preserv", // Adicione isto temporariamente para testar no link do GitHub
 };
 
 export default nextConfig;
