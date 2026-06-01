@@ -1,6 +1,5 @@
-"use client"; // Garante o funcionamento dos estados no Next.js
+"use client";
 
-import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,48 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 export function Contato() {
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
-    setStatus(null);
-
-    const formData = new FormData(event.currentTarget);
-
-    try {
-      // Envio via AJAX direto para o endpoint do FormSubmit com o seu e-mail
-      const response = await fetch(
-        "https://formsubmit.co/ajax/preserv@sarandi.pr.gov.br",
-        {
-          method: "POST",
-          body: formData, // Envia todos os campos do formulário automaticamente
-        },
-      );
-
-      if (response.ok) {
-        setStatus({
-          type: "success",
-          message: "Mensagem enviada com sucesso!",
-        });
-        (event.target as HTMLFormElement).reset(); // Limpa o formulário após o envio
-      } else {
-        setStatus({
-          type: "error",
-          message: "Ocorreu um erro ao enviar. Tente novamente.",
-        });
-      }
-    } catch (error) {
-      setStatus({ type: "error", message: "Erro de conexão com o servidor." });
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <section id="contato" className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -140,7 +97,7 @@ export function Contato() {
             </Card>
           </div>
 
-          {/* Formulário de Contato */}
+          {/* Formulário de Contato Modificado */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
@@ -149,10 +106,22 @@ export function Contato() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* CONFIGURAÇÕES DO FORMSUBMIT */}
-                <input type="hidden" name="_captcha" value="false" />
+              {/* Mudança na Action: Removemos o /ajax/ para evitar o bloqueio de CORS */}
+              <form
+                action="https://formsubmit.co/preserv@sarandi.pr.gov.br"
+                method="POST"
+                className="space-y-4"
+              >
+                {/* Ativamos o captcha para proteger o e-mail institucional contra bots */}
+                <input type="hidden" name="_captcha" value="true" />
                 <input type="hidden" name="_template" value="table" />
+
+                {/* Opcional: Se quiser redirecionar de volta para o site após o envio */}
+                <input
+                  type="hidden"
+                  name="_next"
+                  value="https://preserv.pr.gov.br#contato"
+                />
 
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome Completo</Label>
@@ -201,16 +170,8 @@ export function Contato() {
                   />
                 </div>
 
-                {status && (
-                  <p
-                    className={`text-sm font-medium ${status.type === "success" ? "text-emerald-600" : "text-destructive"}`}
-                  >
-                    {status.message}
-                  </p>
-                )}
-
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Enviando..." : "Enviar Mensagem"}
+                <Button type="submit" className="w-full">
+                  Enviar Mensagem
                 </Button>
               </form>
             </CardContent>
